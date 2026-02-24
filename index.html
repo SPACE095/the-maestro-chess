@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Maestro | Chess Academy</title>
+  <meta name="theme-color" content="#1f5f48">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="shortcut icon" href="./favicon.svg">
+  <link rel="apple-touch-icon" href="./favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@500;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="bg-orb orb-a" aria-hidden="true"></div>
+  <div class="bg-orb orb-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <p class="brand-tag">THE MAESTRO CHESS STUDIO</p>
+      <h1><span class="brand-mark" aria-hidden="true">♛</span> The Maestro</h1>
+      <span id="brandSub" class="brand-sub">خد مستواك من مبتدئ لمحترف بخطة يومية</span>
+    </div>
+    <div class="top-actions">
+      <button id="startGameBtn" class="btn btn-primary">ابدأ المباراة</button>
+      <button id="newGameBtn" class="btn">مباراة جديدة</button>
+      <button id="flipBoardBtn" class="btn">قلب الرقعة</button>
+      <button id="musicBtn" class="btn btn-music">الموسيقى: إيقاف</button>
+      <button id="langBtn" class="btn">EN</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel panel-left">
+      <article class="card">
+        <div class="card-head">
+          <h2 id="botTitle">اختار البوت</h2>
+          <span id="activeBotRating" class="chip">-</span>
+        </div>
+        <div id="botList" class="bot-list" aria-label="Bot list"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <h2 id="settingsTitle">إعدادات المباراة</h2>
+        </div>
+        <div class="controls-grid">
+          <label class="switch-wrap" for="coachToggle">
+            <span id="coachToggleLabel">المدرب الذكي</span>
+            <input id="coachToggle" type="checkbox" checked>
+          </label>
+          <label class="switch-wrap" for="autoQueenToggle">
+            <span id="autoQueenLabel">ترقية تلقائية لوزير</span>
+            <input id="autoQueenToggle" type="checkbox" checked>
+          </label>
+          <label class="switch-wrap" for="premoveToggle">
+            <span id="premoveLabel">الحركة المقدمة</span>
+            <input id="premoveToggle" type="checkbox" checked>
+          </label>
+          <label class="switch-wrap" for="arrowsToggle">
+            <span id="arrowsLabel">الأسهم على الرقعة</span>
+            <input id="arrowsToggle" type="checkbox" checked>
+          </label>
+          <label class="switch-wrap" for="symphonyToggle">
+            <span id="symphonyLabel">وضع السيمفونية</span>
+            <input id="symphonyToggle" type="checkbox" checked>
+          </label>
+          <label class="select-wrap" for="boardThemeSelect">
+            <span id="boardThemeLabel">ثيم الرقعة</span>
+            <select id="boardThemeSelect" class="select-control"></select>
+          </label>
+          <label class="select-wrap" for="pieceStyleSelect">
+            <span id="pieceStyleLabel">شكل القطع</span>
+            <select id="pieceStyleSelect" class="select-control"></select>
+          </label>
+          <label class="select-wrap" for="timeControlInput">
+            <span id="timeControlLabel">وقت كل لاعب (دقائق)</span>
+            <input id="timeControlInput" class="number-control" type="number" min="1" max="180" step="1" value="5">
+          </label>
+          <label class="select-wrap" for="musicTrackSelect">
+            <span id="musicTrackLabel">المقطوعة</span>
+            <select id="musicTrackSelect" class="select-control"></select>
+          </label>
+          <label class="select-wrap" for="musicModeSelect">
+            <span id="musicModeLabel">نمط تشغيل الموسيقى</span>
+            <select id="musicModeSelect" class="select-control"></select>
+          </label>
+          <label class="select-wrap" for="musicVolumeSlider">
+            <span id="musicVolumeLabel">صوت الموسيقى</span>
+            <input id="musicVolumeSlider" class="range-control" type="range" min="0" max="100" step="1" value="25">
+            <span id="musicVolumeValue" class="inline-value">25%</span>
+          </label>
+        </div>
+        <div class="btn-row">
+          <button id="coachHintBtn" class="btn">أفضل نقلة</button>
+          <button id="undoBtn" class="btn">تراجع</button>
+          <button id="applyTimeBtn" class="btn">تطبيق الوقت</button>
+          <button id="clearArrowsBtn" class="btn">مسح الأسهم</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <h2 id="puzzleTitle">وضع الألغاز</h2>
+          <span id="puzzleRatingChip" class="chip">-</span>
+        </div>
+        <div class="controls-grid">
+          <label class="select-wrap" for="puzzleLevelSelect">
+            <span id="puzzleLevelLabel">مستوى الألغاز</span>
+            <select id="puzzleLevelSelect" class="select-control"></select>
+          </label>
+          <label class="select-wrap" for="puzzleMaxInput">
+            <span id="puzzleMaxLabel">أقصى تصنيف اللغز</span>
+            <input id="puzzleMaxInput" class="number-control" type="number" min="600" max="2500" step="50" value="2500">
+          </label>
+        </div>
+        <div class="btn-row">
+          <button id="startPuzzleBtn" class="btn">ابدأ لغز</button>
+          <button id="nextPuzzleBtn" class="btn">لغز جديد</button>
+          <button id="puzzleHintBtn" class="btn">Hint اللغز</button>
+        </div>
+        <p id="puzzleStatus" class="status-line">اختار مستوى وابدأ لغز.</p>
+      </article>
+
+      <article class="card stats-card">
+        <div class="card-head">
+          <h2 id="statsTitle">إحصائياتك</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="metric">
+            <span id="gamesLabel" class="label">مباريات</span>
+            <strong id="gamesStat">0</strong>
+          </div>
+          <div class="metric">
+            <span id="winsLabel" class="label">فوز</span>
+            <strong id="winsStat">0</strong>
+          </div>
+          <div class="metric">
+            <span id="drawsLabel" class="label">تعادل</span>
+            <strong id="drawsStat">0</strong>
+          </div>
+          <div class="metric">
+            <span id="lossesLabel" class="label">هزيمة</span>
+            <strong id="lossesStat">0</strong>
+          </div>
+          <div class="metric wide">
+            <span id="accuracyLabel" class="label">دقة النقلات</span>
+            <strong id="accuracyStat">0%</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="board-section">
+      <div class="board-shell card">
+        <div class="board-head">
+          <div>
+            <p id="matchTiny" class="tiny">المباراة الحالية</p>
+            <h2 id="matchTitle">The Maestro vs Bot</h2>
+          </div>
+          <div class="board-head-side">
+            <div class="turn-badge" id="turnBadge">الدور: الأبيض</div>
+            <div class="clock-wrap" aria-label="Game clocks">
+              <div class="clock-box" id="whiteClockBox">
+                <span id="whiteClockLabel">الأبيض</span>
+                <strong id="whiteClock">05:00</strong>
+              </div>
+              <div class="clock-box" id="blackClockBox">
+                <span id="blackClockLabel">الأسود</span>
+                <strong id="blackClock">05:00</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arena">
+          <aside class="eval-wrap" aria-label="Evaluation bar">
+            <div id="evalFill" class="eval-fill"></div>
+            <span class="eval-top">أبيض</span>
+            <span class="eval-bottom">أسود</span>
+          </aside>
+
+          <div class="board-stage">
+            <div id="board" class="board" aria-label="Chess board"></div>
+            <svg id="arrowLayer" class="arrow-layer" aria-hidden="true"></svg>
+          </div>
+        </div>
+
+        <div class="material-panel" aria-live="polite">
+          <div class="material-row">
+            <span id="whiteCaptureLabel" class="material-label">مكاسب الأبيض</span>
+            <div id="whiteCapturedPieces" class="captured-pieces"></div>
+            <span id="whiteMaterialDiff" class="material-diff"></span>
+          </div>
+          <div class="material-row">
+            <span id="blackCaptureLabel" class="material-label">مكاسب الأسود</span>
+            <div id="blackCapturedPieces" class="captured-pieces"></div>
+            <span id="blackMaterialDiff" class="material-diff"></span>
+          </div>
+        </div>
+
+        <p id="statusLine" class="status-line">ابدأ بالنقلة الأولى. المدرب جاهز.</p>
+      </div>
+    </section>
+
+    <section class="panel panel-right">
+      <article class="card coach-card">
+        <div class="card-head">
+          <h2 id="coachTitle">المدرب</h2>
+          <span id="coachMood" class="chip">جاهز</span>
+        </div>
+        <p id="coachMessage" class="coach-message">
+          كل نقلة هنعمل لها تقييم فوري. العب بأعصاب هادئة وفكر في خطة قبل التنفيذ.
+        </p>
+        <div id="coachBestMove" class="best-move">أفضل نقلة حاليًا: -</div>
+      </article>
+
+    <article class="card">
+      <div class="card-head">
+        <h2 id="movesTitle">سجل النقلات</h2>
+        <span id="moveCount" class="chip">0 نقلة</span>
+      </div>
+      <ol id="moveList" class="move-list"></ol>
+    </article>
+    <article class="card review-card">
+      <div class="card-head">
+        <h2 id="reviewTitle">مراجعة المباراة</h2>
+        <span id="reviewBadge" class="chip">جاهز</span>
+      </div>
+      <p id="reviewSummary" class="review-summary">اختر مباراة ثم اكملها، وستظهر المراجعة مع أفضل وأخطر النقلات.</p>
+      <ul id="reviewList" class="review-list" aria-live="polite"></ul>
+    </article>
+  </section>
+</main>
+
+  <audio id="bgMusic" preload="none" playsinline></audio>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
