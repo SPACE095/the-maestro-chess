@@ -205,24 +205,48 @@
     },
     {
       id: "moonlight-i",
-      titleAr: "Maestro Synth - Nocturne",
-      titleEn: "Maestro Synth - Nocturne",
-      kind: "synth",
-      synthPattern: "nocturne"
+      titleAr: "Beethoven - Moonlight Sonata (I)",
+      titleEn: "Beethoven - Moonlight Sonata (I)",
+      sources: [
+        {
+          type: "audio/mpeg",
+          url: "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/eb/Beethoven_Moonlight_1st_movement.ogg/Beethoven_Moonlight_1st_movement.ogg.mp3"
+        },
+        {
+          type: "audio/ogg; codecs=\"vorbis\"",
+          url: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Beethoven_Moonlight_1st_movement.ogg"
+        }
+      ]
     },
     {
       id: "moonlight-iii",
-      titleAr: "Maestro Synth - Allegro",
-      titleEn: "Maestro Synth - Allegro",
-      kind: "synth",
-      synthPattern: "allegro"
+      titleAr: "Beethoven - Moonlight Sonata (III)",
+      titleEn: "Beethoven - Moonlight Sonata (III)",
+      sources: [
+        {
+          type: "audio/mpeg",
+          url: "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d4/Beethoven_Moonlight_3rd_movement.ogg/Beethoven_Moonlight_3rd_movement.ogg.mp3"
+        },
+        {
+          type: "audio/ogg; codecs=\"vorbis\"",
+          url: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Beethoven_Moonlight_3rd_movement.ogg"
+        }
+      ]
     },
     {
       id: "vivaldi-spring",
-      titleAr: "Maestro Synth - Spring",
-      titleEn: "Maestro Synth - Spring",
-      kind: "synth",
-      synthPattern: "spring"
+      titleAr: "Vivaldi - Spring (I Allegro)",
+      titleEn: "Vivaldi - Spring (I Allegro)",
+      sources: [
+        {
+          type: "audio/mpeg",
+          url: "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/ff/Vivaldi_-_Four_Seasons_1_Spring_mvt_1_Allegro_-_John_Harrison_violin.oga/Vivaldi_-_Four_Seasons_1_Spring_mvt_1_Allegro_-_John_Harrison_violin.oga.mp3"
+        },
+        {
+          type: "audio/ogg; codecs=\"vorbis\"",
+          url: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Vivaldi_-_Four_Seasons_1_Spring_mvt_1_Allegro_-_John_Harrison_violin.oga"
+        }
+      ]
     }
   ];
 
@@ -723,6 +747,8 @@
     musicMode: savedUX.musicMode,
     musicSourceIndex: 0,
     musicShuffleBag: [],
+    musicErrorStreak: 0,
+    musicLastErrorAt: 0,
     synthTimer: null,
     synthSessionToken: 0,
     synthStepIndex: 0,
@@ -1290,6 +1316,20 @@
     return nextId || MUSIC_TRACKS[0].id;
   }
 
+  function pickNextTrackId(currentTrackId) {
+    if (MUSIC_TRACKS.length <= 1) return "";
+
+    const ids = MUSIC_TRACKS.map((track) => track.id);
+    const currentIndex = Math.max(0, ids.indexOf(normalizeMusicTrackId(currentTrackId)));
+    for (let offset = 1; offset < ids.length; offset += 1) {
+      const candidate = ids[(currentIndex + offset) % ids.length];
+      if (candidate !== currentTrackId) {
+        return candidate;
+      }
+    }
+    return "";
+  }
+
   function ensureMusicAudioContext() {
     const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextCtor) return null;
@@ -1601,6 +1641,8 @@
     refs.bgMusic.volume = clamp(state.musicVolume, 0, 1);
     try {
       await refs.bgMusic.play();
+      state.musicErrorStreak = 0;
+      state.musicLastErrorAt = 0;
     } catch (error) {
       if (error && error.name === "AbortError") {
         return;
@@ -1620,6 +1662,12 @@
 
   function handleMusicPlaybackError() {
     if (!refs.bgMusic) return;
+    const nowMs = Date.now();
+    if ((nowMs - state.musicLastErrorAt) > 12000) {
+      state.musicErrorStreak = 0;
+    }
+    state.musicLastErrorAt = nowMs;
+    state.musicErrorStreak += 1;
 
     const activeTrack = getMusicTrackById(state.musicTrackId);
     if (isSynthTrack(activeTrack)) {
@@ -1634,6 +1682,18 @@
       return;
     }
 
+    const maxRecoveryAttempts = Math.max(6, MUSIC_TRACKS.length * 3);
+    if (state.musicErrorStreak > maxRecoveryAttempts) {
+      if (state.musicEnabled) {
+        setStatus(tr("musicLoadError"), "warning");
+      }
+      state.musicEnabled = false;
+      saveUXSettings();
+      renderMusicButton();
+      updateSymphonyLoopState(false);
+      return;
+    }
+
     const nextSourceIndex = state.musicSourceIndex + 1;
     if (activeTrack.sources && nextSourceIndex < activeTrack.sources.length) {
       setMusicSource(activeTrack, nextSourceIndex);
@@ -1643,18 +1703,11 @@
       return;
     }
 
-    if (state.musicMode === "shuffle" && MUSIC_TRACKS.length > 1) {
-      const nextTrackId = pickNextShuffleTrackId();
+    const nextTrackId = state.musicMode === "shuffle"
+      ? pickNextShuffleTrackId()
+      : pickNextTrackId(activeTrack.id);
+    if (nextTrackId && nextTrackId !== activeTrack.id) {
       applyMusicTrack(nextTrackId);
-      if (state.musicEnabled) {
-        playBackgroundMusic();
-      }
-      return;
-    }
-
-    const synthFallback = MUSIC_TRACKS.find((track) => isSynthTrack(track));
-    if (synthFallback && synthFallback.id !== activeTrack.id) {
-      applyMusicTrack(synthFallback.id);
       if (state.musicEnabled) {
         playBackgroundMusic();
       }
@@ -1674,6 +1727,8 @@
     if (refs.bgMusic) {
       refs.bgMusic.pause();
     }
+    state.musicErrorStreak = 0;
+    state.musicLastErrorAt = 0;
     stopSynthTrack();
     renderMusicButton();
     updateSymphonyLoopState();
@@ -2472,9 +2527,9 @@
     const safeBudget = Math.max(0, remainingMs - reserve);
     if (safeBudget <= 0) return 0;
 
-    const phaseMultiplier = ply < 16 ? 0.88 : (ply < 56 ? 1.02 : 0.82);
-    const complexityMultiplier = 0.52 + (complexity * 0.78);
-    const jitter = 0.72 + (Math.random() * 0.42);
+    const phaseMultiplier = ply < 16 ? 0.8 : (ply < 56 ? 0.94 : 0.78);
+    const complexityMultiplier = 0.46 + (complexity * 0.66);
+    const jitter = 0.78 + (Math.random() * 0.32);
 
     const raw = baseThinkMs * phaseMultiplier * complexityMultiplier * jitter;
 
@@ -2486,7 +2541,7 @@
           ? remainingMs * 0.06
           : remainingMs * 0.045;
 
-    const cap = Math.max(0, Math.min(1200, Math.floor(maxByClock), safeBudget));
+    const cap = Math.max(0, Math.min(850, Math.floor(maxByClock), safeBudget));
     return clamp(Math.round(raw), 0, cap);
   }
 
@@ -2640,7 +2695,7 @@
 
     if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
       pieceAtTarget.classList.add("arrive-pop");
-      setTimeout(() => pieceAtTarget.classList.remove("arrive-pop"), 220);
+      setTimeout(() => pieceAtTarget.classList.remove("arrive-pop"), 180);
       return;
     }
 
@@ -2668,7 +2723,7 @@
         { transform: "translate(0, 0) scale(1)", opacity: 1 }
       ],
       {
-        duration: 135,
+        duration: 115,
         easing: "cubic-bezier(0.2, 0.8, 0.25, 1)",
         fill: "forwards"
       }
@@ -3747,7 +3802,7 @@
         score: total
       });
 
-      if ((performance.now() - sliceStart) >= 12) {
+      if ((performance.now() - sliceStart) >= 8) {
         await waitForUiBreath();
         sliceStart = performance.now();
       }
@@ -4097,7 +4152,7 @@
       puzzleMaxRating: 2500,
       musicEnabled: true,
       musicVolume: 0.25,
-      musicTrackId: "moonlight-i",
+      musicTrackId: "fur-elise",
       musicMode: "selected"
     };
 
