@@ -409,6 +409,7 @@ html[dir="ltr"] .bot-item {
   background: linear-gradient(140deg, #2f7f61, #1f5f48);
   color: #f9f2de;
   border-color: rgba(29, 83, 62, 0.58);
+  animation: musicPulse 1.7s ease-in-out infinite;
 }
 
 .stats-grid {
@@ -1331,15 +1332,12 @@ html[dir="ltr"] .coord {
 @keyframes cellWave {
   0% {
     transform: translateY(2px) scale(0.96);
-    filter: blur(0.2px);
   }
   50% {
     transform: translateY(-2px) scale(1.03);
-    filter: blur(0);
   }
   100% {
     transform: translateY(2px) scale(0.96);
-    filter: blur(0.2px);
   }
 }
 
@@ -1381,6 +1379,18 @@ html[dir="ltr"] .coord {
   }
   to {
     filter: saturate(1) brightness(1);
+  }
+}
+
+@keyframes musicPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 127, 97, 0.32);
+  }
+  65% {
+    box-shadow: 0 0 0 10px rgba(47, 127, 97, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 127, 97, 0);
   }
 }
 

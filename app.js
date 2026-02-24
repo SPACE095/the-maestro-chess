@@ -205,38 +205,102 @@
     },
     {
       id: "moonlight-i",
-      titleAr: "Beethoven - Moonlight Sonata (I)",
-      titleEn: "Beethoven - Moonlight Sonata (I)",
-      sources: [
-        {
-          type: "audio/ogg; codecs=\"vorbis\"",
-          url: "https://commons.wikimedia.org/wiki/Special:FilePath/Beethoven_Moonlight_1st_movement.ogg"
-        }
-      ]
+      titleAr: "Maestro Synth - Nocturne",
+      titleEn: "Maestro Synth - Nocturne",
+      kind: "synth",
+      synthPattern: "nocturne"
     },
     {
       id: "moonlight-iii",
-      titleAr: "Beethoven - Moonlight Sonata (III)",
-      titleEn: "Beethoven - Moonlight Sonata (III)",
-      sources: [
-        {
-          type: "audio/ogg; codecs=\"vorbis\"",
-          url: "https://commons.wikimedia.org/wiki/Special:FilePath/Beethoven_Moonlight_3rd_movement.ogg"
-        }
-      ]
+      titleAr: "Maestro Synth - Allegro",
+      titleEn: "Maestro Synth - Allegro",
+      kind: "synth",
+      synthPattern: "allegro"
     },
     {
       id: "vivaldi-spring",
-      titleAr: "Vivaldi - Spring (Allegro)",
-      titleEn: "Vivaldi - Spring (Allegro)",
-      sources: [
-        {
-          type: "audio/ogg; codecs=\"vorbis\"",
-          url: "https://commons.wikimedia.org/wiki/Special:FilePath/Vivaldis_Spring_from_the_Four_Seasons-Allegro.ogg"
-        }
-      ]
+      titleAr: "Maestro Synth - Spring",
+      titleEn: "Maestro Synth - Spring",
+      kind: "synth",
+      synthPattern: "spring"
     }
   ];
+
+  const NOTE_OFFSETS = {
+    C: -9,
+    D: -7,
+    E: -5,
+    F: -4,
+    G: -2,
+    A: 0,
+    B: 2
+  };
+
+  const SYNTH_PATTERNS = {
+    nocturne: {
+      bpm: 102,
+      steps: [
+        { melody: "E5", bass: "A3", beats: 0.5, velocity: 0.32 },
+        { melody: "D#5", beats: 0.5, velocity: 0.29 },
+        { melody: "E5", bass: "E3", beats: 0.5, velocity: 0.33 },
+        { melody: "D#5", beats: 0.5, velocity: 0.29 },
+        { melody: "E5", bass: "A3", beats: 0.5, velocity: 0.34 },
+        { melody: "B4", beats: 0.5, velocity: 0.28 },
+        { melody: "D5", beats: 0.5, velocity: 0.3 },
+        { melody: "C5", beats: 0.5, velocity: 0.3 },
+        { melody: "A4", bass: "A2", beats: 1, velocity: 0.33 },
+        { beats: 0.5 },
+        { melody: "C4", bass: "E3", beats: 0.5, velocity: 0.27 },
+        { melody: "E4", beats: 0.5, velocity: 0.27 },
+        { melody: "A4", bass: "A3", beats: 0.5, velocity: 0.31 },
+        { melody: "B4", beats: 0.5, velocity: 0.3 },
+        { melody: "E5", bass: "E3", beats: 1, velocity: 0.33 },
+        { beats: 0.5 }
+      ]
+    },
+    allegro: {
+      bpm: 126,
+      steps: [
+        { melody: "A4", bass: "A2", beats: 0.5, velocity: 0.31 },
+        { melody: "C5", beats: 0.5, velocity: 0.31 },
+        { melody: "E5", bass: "A3", beats: 0.5, velocity: 0.34 },
+        { melody: "A5", beats: 0.5, velocity: 0.33 },
+        { melody: "G5", bass: "E3", beats: 0.5, velocity: 0.32 },
+        { melody: "E5", beats: 0.5, velocity: 0.31 },
+        { melody: "C5", bass: "C3", beats: 0.5, velocity: 0.3 },
+        { melody: "A4", beats: 0.5, velocity: 0.29 },
+        { melody: "B4", bass: "G2", beats: 0.5, velocity: 0.31 },
+        { melody: "D5", beats: 0.5, velocity: 0.32 },
+        { melody: "G5", bass: "G3", beats: 0.5, velocity: 0.34 },
+        { melody: "B5", beats: 0.5, velocity: 0.34 },
+        { melody: "A5", bass: "E3", beats: 0.5, velocity: 0.33 },
+        { melody: "E5", beats: 0.5, velocity: 0.31 },
+        { melody: "C5", bass: "C3", beats: 0.5, velocity: 0.3 },
+        { melody: "A4", beats: 0.5, velocity: 0.29 }
+      ]
+    },
+    spring: {
+      bpm: 118,
+      steps: [
+        { melody: "E5", bass: "E3", beats: 0.5, velocity: 0.31 },
+        { melody: "G#5", beats: 0.5, velocity: 0.32 },
+        { melody: "B5", bass: "E3", beats: 0.5, velocity: 0.34 },
+        { melody: "E6", beats: 0.5, velocity: 0.34 },
+        { melody: "D6", bass: "B2", beats: 0.5, velocity: 0.32 },
+        { melody: "B5", beats: 0.5, velocity: 0.31 },
+        { melody: "G#5", bass: "E3", beats: 0.5, velocity: 0.31 },
+        { melody: "E5", beats: 0.5, velocity: 0.3 },
+        { melody: "F#5", bass: "D3", beats: 0.5, velocity: 0.31 },
+        { melody: "A5", beats: 0.5, velocity: 0.32 },
+        { melody: "D6", bass: "D3", beats: 0.5, velocity: 0.34 },
+        { melody: "F#6", beats: 0.5, velocity: 0.35 },
+        { melody: "E6", bass: "A2", beats: 0.5, velocity: 0.33 },
+        { melody: "C#6", beats: 0.5, velocity: 0.32 },
+        { melody: "A5", bass: "E3", beats: 0.5, velocity: 0.31 },
+        { melody: "E5", beats: 0.5, velocity: 0.3 }
+      ]
+    }
+  };
 
   const i18n = {
     ar: {
@@ -624,6 +688,7 @@
     activePointerId: null,
     isBotThinking: false,
     botTimer: null,
+    botSearchToken: 0,
     puzzleTimer: null,
     activeBot: bots[4],
     coachEnabled: true,
@@ -643,6 +708,7 @@
     clockRafId: null,
     clockTimeoutId: null,
     clockLastTickAt: 0,
+    clockRenderCache: "",
     timeEnded: false,
     matchStarted: false,
     puzzleLevel: savedUX.puzzleLevel,
@@ -657,7 +723,15 @@
     musicMode: savedUX.musicMode,
     musicSourceIndex: 0,
     musicShuffleBag: [],
+    synthTimer: null,
+    synthSessionToken: 0,
+    synthStepIndex: 0,
+    synthMasterGain: null,
+    synthPlaying: false,
+    syntheticMusicEnergy: 0,
     symphonyRafId: null,
+    symphonyLastFrameAt: 0,
+    symphonyFrameIntervalMs: 1000 / 30,
     symphonyEnergy: 0.12,
     symphonyWaveOpacity: 0.08,
     symphonyHue: 186,
@@ -700,11 +774,7 @@
       const now = performance.now();
       settleActiveClock(now);
       renderClocks();
-      if (document.hidden) {
-        stopSymphonyLoop(false);
-      } else if (state.symphonyEnabled) {
-        startSymphonyLoop();
-      }
+      updateSymphonyLoopState(false);
     });
 
     refs.flipBoardBtn.addEventListener("click", () => {
@@ -743,7 +813,7 @@
       applyMusicMode();
       saveUXSettings();
       renderMusicControls();
-      if (state.musicEnabled && refs.bgMusic.paused) {
+      if (state.musicEnabled) {
         playBackgroundMusic();
       }
       const modeLabel = state.musicMode === "shuffle" ? tr("musicModeShuffle") : tr("musicModeSelected");
@@ -757,6 +827,9 @@
       refs.musicVolumeValue.textContent = `${percent}%`;
       if (refs.bgMusic) {
         refs.bgMusic.volume = clamp(state.musicVolume, 0, 1);
+      }
+      if (state.synthMasterGain) {
+        state.synthMasterGain.gain.value = getSynthGainValue();
       }
     });
 
@@ -1136,6 +1209,14 @@
     return MUSIC_TRACKS.find((track) => track.id === normalizedId) || MUSIC_TRACKS[0];
   }
 
+  function getActiveMusicTrack() {
+    return getMusicTrackById(state.musicTrackId);
+  }
+
+  function isSynthTrack(track) {
+    return !!(track && track.kind === "synth");
+  }
+
   function getMusicTrackLabel(track) {
     return state.lang === "ar" ? track.titleAr : track.titleEn;
   }
@@ -1209,6 +1290,173 @@
     return nextId || MUSIC_TRACKS[0].id;
   }
 
+  function ensureMusicAudioContext() {
+    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextCtor) return null;
+    if (!state.musicAudioContext) {
+      try {
+        state.musicAudioContext = new AudioContextCtor();
+      } catch (error) {
+        return null;
+      }
+    }
+    return state.musicAudioContext;
+  }
+
+  function ensureSynthOutputNode() {
+    const context = ensureMusicAudioContext();
+    if (!context) return null;
+    if (state.synthMasterGain) {
+      state.synthMasterGain.gain.value = getSynthGainValue();
+      return state.synthMasterGain;
+    }
+
+    try {
+      const gain = context.createGain();
+      gain.gain.value = getSynthGainValue();
+      gain.connect(context.destination);
+      state.synthMasterGain = gain;
+      return gain;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function getSynthGainValue() {
+    return 0.08 + (clamp(state.musicVolume, 0, 1) * 0.56);
+  }
+
+  function noteToFrequency(note) {
+    if (!note || typeof note !== "string") return 0;
+    const parsed = /^([A-G])([#b]?)(-?\d)$/.exec(note.trim());
+    if (!parsed) return 0;
+
+    const letter = parsed[1];
+    const accidental = parsed[2];
+    const octave = Number(parsed[3]);
+    const baseOffset = NOTE_OFFSETS[letter];
+    if (!Number.isFinite(baseOffset) || !Number.isFinite(octave)) return 0;
+
+    let semitone = baseOffset;
+    if (accidental === "#") semitone += 1;
+    if (accidental === "b") semitone -= 1;
+
+    const distanceFromA4 = semitone + ((octave - 4) * 12);
+    return 440 * (2 ** (distanceFromA4 / 12));
+  }
+
+  function triggerSynthTone(note, durationMs, velocity, oscillatorType = "triangle", detuneCents = 0) {
+    const freq = noteToFrequency(note);
+    if (!freq) return false;
+
+    const context = ensureMusicAudioContext();
+    const output = ensureSynthOutputNode();
+    if (!context || !output) return false;
+
+    const durationSec = clamp(durationMs / 1000, 0.08, 1.9);
+    const peak = clamp(velocity, 0.02, 0.72);
+    const now = context.currentTime + 0.002;
+
+    try {
+      const osc = context.createOscillator();
+      const gain = context.createGain();
+      osc.type = oscillatorType;
+      osc.frequency.setValueAtTime(freq, now);
+      if (detuneCents) {
+        osc.detune.setValueAtTime(detuneCents, now);
+      }
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peak), now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + (durationSec * 0.92));
+
+      osc.connect(gain);
+      gain.connect(output);
+
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+      };
+
+      osc.start(now);
+      osc.stop(now + durationSec + 0.05);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function stopSynthTrack() {
+    if (state.synthTimer) {
+      clearTimeout(state.synthTimer);
+      state.synthTimer = null;
+    }
+    state.synthSessionToken += 1;
+    state.synthStepIndex = 0;
+    state.synthPlaying = false;
+    state.syntheticMusicEnergy = 0;
+  }
+
+  function runSynthStep(track, pattern, token) {
+    if (!pattern || !pattern.steps || !pattern.steps.length) {
+      stopSynthTrack();
+      return;
+    }
+    if (!state.musicEnabled || token !== state.synthSessionToken) return;
+    if (normalizeMusicTrackId(state.musicTrackId) !== track.id) return;
+
+    const step = pattern.steps[state.synthStepIndex % pattern.steps.length];
+    const bpm = clamp(Number(pattern.bpm) || 112, 60, 200);
+    const beatMs = 60000 / bpm;
+    const beats = clamp(Number(step?.beats) || 0.5, 0.25, 2.5);
+    const stepMs = Math.max(80, Math.round(beatMs * beats));
+    const velocity = clamp(Number(step?.velocity) || 0.3, 0.08, 0.72);
+
+    if (step && step.melody) {
+      triggerSynthTone(step.melody, stepMs, velocity, "triangle", 0);
+      triggerSynthTone(step.melody, stepMs, velocity * 0.35, "sawtooth", 7);
+    }
+    if (step && step.bass) {
+      triggerSynthTone(step.bass, stepMs * 1.08, velocity * 0.62, "sine", -3);
+    }
+
+    state.syntheticMusicEnergy = clamp(
+      (velocity * 1.55) + (step && step.bass ? 0.07 : 0) + (step && step.melody ? 0.05 : 0),
+      0,
+      1
+    );
+
+    const nextIndex = (state.synthStepIndex + 1) % pattern.steps.length;
+    const completedLoop = nextIndex === 0;
+    state.synthStepIndex = nextIndex;
+
+    if (completedLoop && state.musicMode === "shuffle" && MUSIC_TRACKS.length > 1) {
+      const nextTrackId = pickNextShuffleTrackId();
+      applyMusicTrack(nextTrackId);
+      if (state.musicEnabled) {
+        playBackgroundMusic();
+      }
+      return;
+    }
+
+    state.synthTimer = setTimeout(() => {
+      runSynthStep(track, pattern, token);
+    }, stepMs);
+  }
+
+  function startSynthTrack(track) {
+    const pattern = SYNTH_PATTERNS[track.synthPattern];
+    if (!pattern || !pattern.steps || !pattern.steps.length) return false;
+    stopSynthTrack();
+    if (!ensureSynthOutputNode()) return false;
+
+    state.synthSessionToken += 1;
+    state.synthStepIndex = 0;
+    state.synthPlaying = true;
+    runSynthStep(track, pattern, state.synthSessionToken);
+    return true;
+  }
+
   function initMusic() {
     if (!refs.bgMusic) return;
 
@@ -1234,7 +1482,9 @@
   }
 
   function detectBestMusicSourceIndex(track) {
+    if (isSynthTrack(track)) return -1;
     if (!refs.bgMusic || typeof refs.bgMusic.canPlayType !== "function") return 0;
+    if (!track || !track.sources || !track.sources.length) return -1;
 
     let maybeIndex = -1;
     for (let i = 0; i < track.sources.length; i += 1) {
@@ -1250,7 +1500,21 @@
 
   function setMusicSource(track, sourceIndex) {
     if (!refs.bgMusic) return false;
-    if (!track || !track.sources || !track.sources.length) return false;
+    if (!track) return false;
+
+    state.musicTrackId = track.id;
+
+    if (isSynthTrack(track)) {
+      stopSynthTrack();
+      refs.bgMusic.pause();
+      refs.bgMusic.removeAttribute("src");
+      refs.bgMusic.dataset.trackId = track.id;
+      refs.bgMusic.dataset.sourceIndex = "-1";
+      state.musicSourceIndex = -1;
+      return true;
+    }
+
+    if (!track.sources || !track.sources.length) return false;
 
     const safeIndex = clamp(Math.round(sourceIndex), 0, track.sources.length - 1);
     const source = track.sources[safeIndex];
@@ -1258,10 +1522,10 @@
 
     const sourceChanged = refs.bgMusic.dataset.trackId !== track.id
       || Number(refs.bgMusic.dataset.sourceIndex) !== safeIndex;
-    state.musicTrackId = track.id;
     state.musicSourceIndex = safeIndex;
     if (!sourceChanged) return true;
 
+    stopSynthTrack();
     refs.bgMusic.src = source.url;
     refs.bgMusic.dataset.trackId = track.id;
     refs.bgMusic.dataset.sourceIndex = String(safeIndex);
@@ -1308,14 +1572,31 @@
   async function playBackgroundMusic() {
     if (!refs.bgMusic) return;
 
-    ensureMusicAnalyser();
-    if (state.musicAudioContext && state.musicAudioContext.state === "suspended") {
+    const activeTrack = getActiveMusicTrack();
+    const context = ensureMusicAudioContext();
+    if (context && context.state === "suspended") {
       try {
-        await state.musicAudioContext.resume();
+        await context.resume();
       } catch (error) {
         // Keep playback flow alive even if WebAudio resume fails.
       }
     }
+
+    if (isSynthTrack(activeTrack)) {
+      refs.bgMusic.pause();
+      const synthStarted = startSynthTrack(activeTrack);
+      if (!synthStarted) {
+        setStatus(tr("musicLoadError"), "warning");
+        state.musicEnabled = false;
+        saveUXSettings();
+      }
+      renderMusicButton();
+      updateSymphonyLoopState();
+      return;
+    }
+
+    stopSynthTrack();
+    ensureMusicAnalyser();
 
     refs.bgMusic.volume = clamp(state.musicVolume, 0, 1);
     try {
@@ -1334,17 +1615,27 @@
     }
 
     renderMusicButton();
-    if (state.symphonyEnabled) {
-      startSymphonyLoop();
-    }
+    updateSymphonyLoopState();
   }
 
   function handleMusicPlaybackError() {
     if (!refs.bgMusic) return;
 
     const activeTrack = getMusicTrackById(state.musicTrackId);
+    if (isSynthTrack(activeTrack)) {
+      stopSynthTrack();
+      if (state.musicEnabled) {
+        setStatus(tr("musicLoadError"), "warning");
+      }
+      state.musicEnabled = false;
+      saveUXSettings();
+      renderMusicButton();
+      updateSymphonyLoopState();
+      return;
+    }
+
     const nextSourceIndex = state.musicSourceIndex + 1;
-    if (nextSourceIndex < activeTrack.sources.length) {
+    if (activeTrack.sources && nextSourceIndex < activeTrack.sources.length) {
       setMusicSource(activeTrack, nextSourceIndex);
       if (state.musicEnabled) {
         playBackgroundMusic();
@@ -1361,49 +1652,63 @@
       return;
     }
 
+    const synthFallback = MUSIC_TRACKS.find((track) => isSynthTrack(track));
+    if (synthFallback && synthFallback.id !== activeTrack.id) {
+      applyMusicTrack(synthFallback.id);
+      if (state.musicEnabled) {
+        playBackgroundMusic();
+      }
+      return;
+    }
+
     if (state.musicEnabled) {
       setStatus(tr("musicLoadError"), "warning");
     }
     state.musicEnabled = false;
     saveUXSettings();
     renderMusicButton();
+    updateSymphonyLoopState(false);
   }
 
   function stopBackgroundMusic() {
-    if (!refs.bgMusic) return;
-
-    refs.bgMusic.pause();
-    renderMusicButton();
-    if (state.symphonyEnabled) {
-      startSymphonyLoop();
+    if (refs.bgMusic) {
+      refs.bgMusic.pause();
     }
+    stopSynthTrack();
+    renderMusicButton();
+    updateSymphonyLoopState();
   }
 
   function renderMusicButton() {
     if (!refs.musicBtn) return;
     refs.musicBtn.textContent = state.musicEnabled ? tr("musicOn") : tr("musicOff");
-    const isPlaying = !!(refs.bgMusic && !refs.bgMusic.paused);
-    refs.musicBtn.classList.toggle("playing", state.musicEnabled && isPlaying);
+    refs.musicBtn.classList.toggle("playing", state.musicEnabled && isMusicActivelyPlaying());
+  }
+
+  function isMusicActivelyPlaying() {
+    const activeTrack = getActiveMusicTrack();
+    if (isSynthTrack(activeTrack)) {
+      return state.synthPlaying;
+    }
+    return !!(refs.bgMusic && !refs.bgMusic.paused);
   }
 
   function ensureMusicAnalyser() {
     if (state.musicAnalyser || state.musicAnalyserFailed || !refs.bgMusic) return;
-
-    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextCtor) {
+    const context = ensureMusicAudioContext();
+    if (!context) {
       state.musicAnalyserFailed = true;
       return;
     }
 
     try {
-      state.musicAudioContext = state.musicAudioContext || new AudioContextCtor();
-      state.musicAnalyser = state.musicAudioContext.createAnalyser();
+      state.musicAnalyser = context.createAnalyser();
       state.musicAnalyser.fftSize = 256;
       state.musicAnalyser.smoothingTimeConstant = 0.84;
       state.musicAnalyserData = new Uint8Array(state.musicAnalyser.frequencyBinCount);
-      state.musicSourceNode = state.musicAudioContext.createMediaElementSource(refs.bgMusic);
+      state.musicSourceNode = context.createMediaElementSource(refs.bgMusic);
       state.musicSourceNode.connect(state.musicAnalyser);
-      state.musicAnalyser.connect(state.musicAudioContext.destination);
+      state.musicAnalyser.connect(context.destination);
     } catch (error) {
       state.musicAnalyserFailed = true;
       state.musicAnalyser = null;
@@ -1412,6 +1717,13 @@
   }
 
   function readMusicEnergy() {
+    if (isSynthTrack(getActiveMusicTrack())) {
+      if (!state.musicEnabled || !state.synthPlaying) return null;
+      const current = clamp(state.syntheticMusicEnergy, 0, 1);
+      state.syntheticMusicEnergy = clamp(state.syntheticMusicEnergy * 0.9, 0, 1);
+      return current;
+    }
+
     if (!state.musicAnalyser || !state.musicAnalyserData) return null;
     if (!refs.bgMusic || refs.bgMusic.paused) return null;
 
@@ -1469,13 +1781,32 @@
     }
   }
 
+  function shouldRunSymphonyLoop() {
+    if (!state.symphonyEnabled || document.hidden) return false;
+    if (isMusicActivelyPlaying()) return true;
+    return state.mode === "game" && state.matchStarted && !state.timeEnded;
+  }
+
+  function updateSymphonyLoopState(resetVisual = false) {
+    if (shouldRunSymphonyLoop()) {
+      startSymphonyLoop();
+      return;
+    }
+    stopSymphonyLoop(resetVisual);
+  }
+
   function startSymphonyLoop() {
-    if (!state.symphonyEnabled || document.hidden || state.symphonyRafId !== null) return;
+    if (!shouldRunSymphonyLoop() || state.symphonyRafId !== null) return;
 
     const tick = (now) => {
       state.symphonyRafId = null;
-      if (!state.symphonyEnabled || document.hidden) return;
-      syncSymphonyFrame(now);
+      if (!shouldRunSymphonyLoop()) return;
+
+      const frameInterval = isMusicActivelyPlaying() ? state.symphonyFrameIntervalMs : (1000 / 18);
+      if ((now - state.symphonyLastFrameAt) >= frameInterval) {
+        state.symphonyLastFrameAt = now;
+        syncSymphonyFrame(now);
+      }
       state.symphonyRafId = requestAnimationFrame(tick);
     };
 
@@ -1487,6 +1818,7 @@
       cancelAnimationFrame(state.symphonyRafId);
       state.symphonyRafId = null;
     }
+    state.symphonyLastFrameAt = 0;
 
     if (resetVisual && refs.board) {
       const stage = refs.board.parentElement;
@@ -1512,7 +1844,7 @@
     }
     if (state.symphonyEnabled) {
       syncSymphonyFrame(performance.now());
-      startSymphonyLoop();
+      updateSymphonyLoopState(false);
       return;
     }
     stopSymphonyLoop(true);
@@ -1637,6 +1969,7 @@
     refs.coachMood.textContent = tr("coachAnalysis");
     refs.coachMessage.textContent = tr("puzzleGuide");
     refs.coachBestMove.textContent = tr("coachBestNow", { move: "-" });
+    updateSymphonyLoopState(false);
 
     state.puzzleTimer = setTimeout(() => {
       state.puzzleTimer = null;
@@ -1845,6 +2178,7 @@
         scheduleBotMove();
       }
     }
+    updateSymphonyLoopState(false);
   }
 
   function syncAll() {
@@ -1861,12 +2195,14 @@
     const startMs = state.timeControlMinutes * 60 * 1000;
     state.whiteTimeMs = startMs;
     state.blackTimeMs = startMs;
+    state.clockRenderCache = "";
   }
 
   function startClockLoop() {
     stopClockLoop();
     state.clockLoopActive = true;
     state.clockLastTickAt = performance.now();
+    state.clockRenderCache = "";
     queueClockTick();
   }
 
@@ -1912,15 +2248,23 @@
   }
 
   function renderClocks() {
-    refs.whiteClock.textContent = formatClock(state.whiteTimeMs);
-    refs.blackClock.textContent = formatClock(state.blackTimeMs);
+    const whiteClockText = formatClock(state.whiteTimeMs);
+    const blackClockText = formatClock(state.blackTimeMs);
 
     const activeTurn = state.mode === "game" && state.matchStarted && !state.timeEnded && !game.game_over() ? game.turn() : "";
+    const whiteDanger = state.mode === "game" && state.matchStarted && state.whiteTimeMs <= 15000;
+    const blackDanger = state.mode === "game" && state.matchStarted && state.blackTimeMs <= 15000;
+    const cacheKey = `${whiteClockText}|${blackClockText}|${activeTurn}|${whiteDanger ? 1 : 0}|${blackDanger ? 1 : 0}`;
+    if (cacheKey === state.clockRenderCache) return;
+    state.clockRenderCache = cacheKey;
+
+    refs.whiteClock.textContent = whiteClockText;
+    refs.blackClock.textContent = blackClockText;
     refs.whiteClockBox.classList.toggle("active", activeTurn === "w");
     refs.blackClockBox.classList.toggle("active", activeTurn === "b");
 
-    refs.whiteClockBox.classList.toggle("danger", state.mode === "game" && state.matchStarted && state.whiteTimeMs <= 15000);
-    refs.blackClockBox.classList.toggle("danger", state.mode === "game" && state.matchStarted && state.blackTimeMs <= 15000);
+    refs.whiteClockBox.classList.toggle("danger", whiteDanger);
+    refs.blackClockBox.classList.toggle("danger", blackDanger);
   }
 
   function formatClock(ms) {
@@ -2070,6 +2414,12 @@
       depth = Math.max(1, base.depth - 2);
     } else if (remainingMs <= 26000) {
       depth = Math.max(1, base.depth - 1);
+    }
+
+    if (complexity >= 0.92) {
+      depth = Math.max(1, depth - 2);
+    } else if (complexity >= 0.82) {
+      depth = Math.max(1, depth - 1);
     }
 
     const delayMs = computeAdaptiveThinkDelay(base.thinkMs, remainingMs, complexity, ply);
@@ -2988,13 +3338,20 @@
     if (state.mode !== "game" || state.timeEnded) return;
     clearBotTimer();
     state.isBotThinking = true;
+    const searchToken = state.botSearchToken + 1;
+    state.botSearchToken = searchToken;
     state.botRuntimeProfile = getTimedBotProfile();
     const delayMs = state.botRuntimeProfile.delayMs;
     setStatus(tr("botThinking", { bot: state.activeBot.name }), "warning");
 
     const startThink = () => {
       state.botTimer = null;
-      makeBotMove();
+      if (searchToken !== state.botSearchToken) return;
+      Promise.resolve(makeBotMove(searchToken)).catch(() => {
+        if (searchToken !== state.botSearchToken) return;
+        state.isBotThinking = false;
+        state.botRuntimeProfile = null;
+      });
     };
 
     if (delayMs <= 12) {
@@ -3009,26 +3366,52 @@
     state.botTimer = setTimeout(startThink, delayMs);
   }
 
-  function makeBotMove() {
-    if (state.mode !== "game") return;
-    if (state.timeEnded) return;
+  async function makeBotMove(searchToken = state.botSearchToken) {
+    if (searchToken !== state.botSearchToken) return;
+    if (state.mode !== "game") {
+      state.isBotThinking = false;
+      return;
+    }
+    if (state.timeEnded) {
+      state.isBotThinking = false;
+      return;
+    }
     if (game.game_over()) {
       state.isBotThinking = false;
       return;
     }
 
     const settleAtStart = performance.now();
-    if (!settleActiveClock(settleAtStart)) return;
+    if (!settleActiveClock(settleAtStart)) {
+      state.isBotThinking = false;
+      return;
+    }
 
     const profile = state.botRuntimeProfile || getTimedBotProfile();
-    const calcStartedAt = performance.now();
-    const move = pickBotMove(profile);
-    const calcElapsedMs = performance.now() - calcStartedAt;
+    const searchFen = game.fen();
+    const botColor = game.turn();
+    const move = await pickBotMoveAsync(profile, searchFen, searchToken);
+    if (searchToken !== state.botSearchToken) return;
+
     state.botRuntimeProfile = null;
 
-    const botColor = getBotColor();
-    consumeSideTime(botColor, calcElapsedMs);
-    state.clockLastTickAt = performance.now();
+    if (state.mode !== "game" || state.timeEnded) {
+      state.isBotThinking = false;
+      return;
+    }
+    if (game.game_over()) {
+      state.isBotThinking = false;
+      return;
+    }
+    if (game.fen() !== searchFen || game.turn() !== botColor) {
+      state.isBotThinking = false;
+      return;
+    }
+
+    if (!settleActiveClock(performance.now())) {
+      state.isBotThinking = false;
+      return;
+    }
     if (isSideFlagged(botColor)) {
       renderClocks();
       handleTimeOut(botColor);
@@ -3041,9 +3424,11 @@
       return;
     }
 
-    if (!settleActiveClock(performance.now())) return;
-
     const played = game.move({ from: move.from, to: move.to, promotion: move.promotion || "q" });
+    if (!played) {
+      state.isBotThinking = false;
+      return;
+    }
     state.lastMove = { from: played.from, to: played.to };
     state.pendingAnimation = { from: played.from, to: played.to };
     state.isBotThinking = false;
@@ -3060,6 +3445,33 @@
     setStatus(tr("yourTurn"));
   }
 
+  async function pickBotMoveAsync(runtimeProfile, startFen, searchToken) {
+    const profile = runtimeProfile || state.activeBot;
+    const searchBoard = new Chess(startFen);
+    const searchSide = searchBoard.turn();
+    const shouldAbort = () =>
+      searchToken !== state.botSearchToken
+      || state.mode !== "game"
+      || state.timeEnded;
+
+    const scoredMoves = await scoreMovesAsync(
+      searchBoard,
+      searchSide,
+      profile.depth,
+      profile,
+      shouldAbort
+    );
+    if (!scoredMoves || !scoredMoves.length || shouldAbort()) {
+      return null;
+    }
+
+    const complexity = Number.isFinite(profile.complexity)
+      ? clamp(profile.complexity, 0, 1)
+      : estimatePositionComplexity(searchBoard);
+
+    return chooseBotMoveFromScoredMoves(scoredMoves, profile, complexity);
+  }
+
   function pickBotMove(runtimeProfile = null) {
     const profile = runtimeProfile || state.activeBot;
     const scoredMoves = scoreMoves(game, getBotColor(), profile.depth, profile);
@@ -3069,6 +3481,11 @@
     const complexity = Number.isFinite(profile.complexity)
       ? clamp(profile.complexity, 0, 1)
       : estimatePositionComplexity(game);
+
+    return chooseBotMoveFromScoredMoves(scoredMoves, profile, complexity);
+  }
+
+  function chooseBotMoveFromScoredMoves(scoredMoves, profile, complexity) {
     const errors = profile.humanError || {
       inaccuracy: clamp(0.09 + (profile.noise / 1000), 0.06, 0.35),
       mistake: clamp((profile.blunder || 0.08) * 0.9, 0.03, 0.24),
@@ -3307,6 +3724,39 @@
     return scored;
   }
 
+  async function scoreMovesAsync(chess, side, depth, profile, shouldAbort) {
+    const legalMoves = chess.moves({ verbose: true });
+    const orderedMoves = orderMovesByTactics(legalMoves);
+    const searchCache = new Map();
+    const scored = [];
+    let sliceStart = performance.now();
+
+    for (const move of orderedMoves) {
+      if (shouldAbort && shouldAbort()) return null;
+
+      chess.move(move);
+      const baseScore = minimax(chess, depth - 1, -Infinity, Infinity, side, profile, searchCache);
+      const styleScore = styleBonus(move, profile);
+      const noise = profile.noise ? (Math.random() * profile.noise - profile.noise / 2) : 0;
+      const total = baseScore + styleScore + noise;
+      chess.undo();
+
+      scored.push({
+        move,
+        san: move.san,
+        score: total
+      });
+
+      if ((performance.now() - sliceStart) >= 12) {
+        await waitForUiBreath();
+        sliceStart = performance.now();
+      }
+    }
+
+    scored.sort((a, b) => b.score - a.score);
+    return scored;
+  }
+
   function minimax(chess, depth, alpha, beta, perspective, profile, cache = null) {
     const cacheKey = cache ? `${chess.fen()}|${depth}|${perspective}` : "";
     if (cache && cache.has(cacheKey)) {
@@ -3506,6 +3956,7 @@
     renderStats();
     renderClocks();
     refreshCoachBest();
+    updateSymphonyLoopState(false);
   }
 
   function handleGameOver() {
@@ -3546,6 +3997,7 @@
     renderStats();
     setStatus(resultText);
     refreshCoachBest();
+    updateSymphonyLoopState(false);
     return true;
   }
 
@@ -3643,9 +4095,9 @@
       symphonyEnabled: true,
       puzzleLevel: "intermediate",
       puzzleMaxRating: 2500,
-      musicEnabled: false,
+      musicEnabled: true,
       musicVolume: 0.25,
-      musicTrackId: MUSIC_TRACKS[0].id,
+      musicTrackId: "moonlight-i",
       musicMode: "selected"
     };
 
@@ -3660,7 +4112,7 @@
         symphonyEnabled: parsed.symphonyEnabled !== false,
         puzzleLevel: normalizePuzzleLevel(parsed.puzzleLevel),
         puzzleMaxRating: clamp(Math.round(Number(parsed.puzzleMaxRating) || 2500), 600, 2500),
-        musicEnabled: parsed.musicEnabled === true,
+        musicEnabled: parsed.musicEnabled !== false,
         musicVolume: clamp(Number.isFinite(parsedMusicVolume) ? parsedMusicVolume : 0.25, 0, 1),
         musicTrackId: normalizeMusicTrackId(parsed.musicTrackId),
         musicMode: normalizeMusicMode(parsed.musicMode)
@@ -3709,6 +4161,8 @@
       clearTimeout(state.botTimer);
       state.botTimer = null;
     }
+    state.botSearchToken += 1;
+    state.isBotThinking = false;
     state.botRuntimeProfile = null;
   }
 
@@ -3724,6 +4178,16 @@
     if (!history.length) return null;
     const move = history[history.length - 1];
     return { from: move.from, to: move.to };
+  }
+
+  function waitForUiBreath() {
+    return new Promise((resolve) => {
+      if (document.hidden) {
+        setTimeout(resolve, 0);
+        return;
+      }
+      requestAnimationFrame(() => resolve());
+    });
   }
 
   function lerp(from, to, amount) {
