@@ -302,6 +302,8 @@
     }
   };
 
+  const NOTE_PARTICLE_SYMBOLS = ["♪", "♫", "♬", "♩", "♭", "♯"];
+
   const i18n = {
     ar: {
       brandSub: "خد مستواك من مبتدئ لمحترف بخطة يومية",
@@ -575,6 +577,7 @@
 
   const refs = {
     board: document.getElementById("board"),
+    noteLayer: document.getElementById("noteLayer"),
     botList: document.getElementById("botList"),
     activeBotRating: document.getElementById("activeBotRating"),
     brandSub: document.getElementById("brandSub"),
@@ -736,6 +739,13 @@
     symphonyWaveOpacity: 0.08,
     symphonyHue: 186,
     symphonyPhase: 0,
+    noteParticles: [],
+    noteParticleSeq: 0,
+    noteSpawnCarry: 0,
+    noteLastFrameAt: 0,
+    prefersReducedMotion: typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false,
     musicAudioContext: null,
     musicAnalyser: null,
     musicAnalyserData: null,
@@ -776,6 +786,24 @@
       renderClocks();
       updateSymphonyLoopState(false);
     });
+
+    if (typeof window.matchMedia === "function") {
+      const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const handleMotionChange = (event) => {
+        state.prefersReducedMotion = !!event.matches;
+        if (state.prefersReducedMotion) {
+          clearFlyingNotes(true);
+        } else {
+          updateSymphonyLoopState(false);
+        }
+      };
+
+      if (typeof motionQuery.addEventListener === "function") {
+        motionQuery.addEventListener("change", handleMotionChange);
+      } else if (typeof motionQuery.addListener === "function") {
+        motionQuery.addListener(handleMotionChange);
+      }
+    }
 
     refs.flipBoardBtn.addEventListener("click", () => {
       state.orientation = state.orientation === "white" ? "black" : "white";
@@ -1749,6 +1777,128 @@
     return clamp(((bassAvg * 1.18) + (midAvg * 0.82)) / (255 * 2), 0, 1);
   }
 
+  function clearFlyingNotes(resetOpacity = true) {
+    if (!refs.noteLayer) return;
+
+    for (const particle of state.noteParticles) {
+      if (particle.el && particle.el.isConnected) {
+        particle.el.remove();
+      }
+    }
+
+    state.noteParticles = [];
+    state.noteSpawnCarry = 0;
+    state.noteLastFrameAt = 0;
+
+    if (resetOpacity) {
+      refs.noteLayer.style.setProperty("--note-layer-opacity", "0");
+    }
+  }
+
+  function spawnFlyingNote(energy, width, height) {
+    if (!refs.noteLayer) return;
+
+    const symbol = NOTE_PARTICLE_SYMBOLS[Math.floor(Math.random() * NOTE_PARTICLE_SYMBOLS.length)];
+    const sizePx = Math.round(12 + (Math.random() * 18) + (energy * 9));
+    const x = (width * (0.08 + (Math.random() * 0.84)));
+    const y = height + 22;
+    const hue = Math.round(state.symphonyHue + ((Math.random() - 0.5) * 28));
+
+    const noteEl = document.createElement("span");
+    noteEl.className = "note-particle";
+    noteEl.textContent = symbol;
+    noteEl.style.fontSize = `${sizePx}px`;
+    noteEl.style.setProperty("--note-hue", String(hue));
+    refs.noteLayer.appendChild(noteEl);
+
+    state.noteParticles.push({
+      id: ++state.noteParticleSeq,
+      el: noteEl,
+      x,
+      y,
+      vx: (Math.random() - 0.5) * (34 + (energy * 92)),
+      vy: -(56 + (Math.random() * 84) + (energy * 128)),
+      wobbleAmp: 5 + (Math.random() * 13) + (energy * 10),
+      wobbleFreq: 1.1 + (Math.random() * 1.9),
+      phase: Math.random() * Math.PI * 2,
+      rotation: (Math.random() - 0.5) * 40,
+      rotationSpeed: (Math.random() - 0.5) * 108,
+      ageMs: 0,
+      lifeMs: Math.round(2500 + (Math.random() * 2500) - (energy * 900))
+    });
+  }
+
+  function updateFlyingNotes(now, energy) {
+    if (!refs.noteLayer) return;
+    if (state.prefersReducedMotion || !state.symphonyEnabled) {
+      clearFlyingNotes(true);
+      return;
+    }
+
+    const bounds = refs.noteLayer.getBoundingClientRect();
+    const width = bounds.width;
+    const height = bounds.height;
+    if (!width || !height) return;
+
+    if (!state.noteLastFrameAt) {
+      state.noteLastFrameAt = now;
+    }
+
+    let dtMs = now - state.noteLastFrameAt;
+    state.noteLastFrameAt = now;
+    if (!Number.isFinite(dtMs) || dtMs <= 0) dtMs = 16;
+    dtMs = Math.min(dtMs, 48);
+    const dtSec = dtMs / 1000;
+    const baseEnergy = clamp(energy, 0, 1);
+    const active = shouldRunSymphonyLoop();
+
+    const spawnPerSec = active
+      ? (0.75 + (baseEnergy * 5.6) + (isMusicActivelyPlaying() ? 1.35 : 0.55))
+      : 0;
+    const maxNotes = active ? (10 + Math.round(baseEnergy * 24)) : 0;
+
+    state.noteSpawnCarry += spawnPerSec * dtSec;
+    if (state.noteSpawnCarry > 8) {
+      state.noteSpawnCarry = 8;
+    }
+
+    while (state.noteSpawnCarry >= 1 && state.noteParticles.length < maxNotes) {
+      spawnFlyingNote(baseEnergy, width, height);
+      state.noteSpawnCarry -= 1;
+    }
+
+    const survivors = [];
+    for (const particle of state.noteParticles) {
+      particle.ageMs += dtMs;
+      const lifeProgress = particle.ageMs / particle.lifeMs;
+      if (lifeProgress >= 1 || particle.y < -36 || !particle.el || !particle.el.isConnected) {
+        if (particle.el && particle.el.isConnected) {
+          particle.el.remove();
+        }
+        continue;
+      }
+
+      particle.x += particle.vx * dtSec;
+      particle.y += particle.vy * dtSec;
+      const wobble = Math.sin((particle.ageMs * 0.001 * particle.wobbleFreq) + particle.phase) * particle.wobbleAmp;
+      const x = particle.x + wobble;
+      const y = particle.y;
+      const alpha = clamp(Math.sin(Math.PI * lifeProgress) * (0.3 + (baseEnergy * 0.7)), 0, 0.95);
+      const scale = 0.78 + ((1 - lifeProgress) * 0.34) + (baseEnergy * 0.2);
+      const rotation = particle.rotation + (particle.rotationSpeed * (particle.ageMs / 1000));
+
+      particle.el.style.opacity = alpha.toFixed(3);
+      particle.el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rotation.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      survivors.push(particle);
+    }
+    state.noteParticles = survivors;
+
+    const layerOpacity = active
+      ? clamp(0.18 + (baseEnergy * 0.72), 0.18, 0.92)
+      : 0;
+    refs.noteLayer.style.setProperty("--note-layer-opacity", layerOpacity.toFixed(3));
+  }
+
   function syncSymphonyFrame(now = performance.now()) {
     if (!refs.board) return;
     const stage = refs.board.parentElement;
@@ -1779,6 +1929,8 @@
       stage.style.setProperty("--symphony-phase", `${state.symphonyPhase.toFixed(4)}turn`);
       stage.style.setProperty("--symphony-aura-opacity", auraOpacity.toFixed(3));
     }
+
+    updateFlyingNotes(now, state.symphonyEnergy);
   }
 
   function shouldRunSymphonyLoop() {
@@ -1819,6 +1971,7 @@
       state.symphonyRafId = null;
     }
     state.symphonyLastFrameAt = 0;
+    clearFlyingNotes(true);
 
     if (resetVisual && refs.board) {
       const stage = refs.board.parentElement;

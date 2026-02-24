@@ -720,7 +720,43 @@ html[dir="ltr"] .clock-wrap {
   touch-action: manipulation;
   contain: content;
   transform: translateZ(0);
+  z-index: 2;
   transition: box-shadow 180ms ease, filter 180ms ease;
+}
+
+.note-layer {
+  --note-layer-opacity: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--note-layer-opacity);
+  mix-blend-mode: screen;
+  transition: opacity 220ms ease;
+}
+
+.board-stage[data-symphony="off"] .note-layer {
+  opacity: 0;
+}
+
+.note-particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  font-family: "Sora", "Tajawal", sans-serif;
+  font-weight: 700;
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  color: hsla(var(--note-hue, 190), 96%, 82%, 0.94);
+  text-shadow:
+    0 0 6px hsla(var(--note-hue, 190), 92%, 66%, 0.42),
+    0 2px 4px rgba(12, 24, 40, 0.34);
+  will-change: transform, opacity;
 }
 
 .arrow-layer {
@@ -1489,6 +1525,10 @@ html[dir="ltr"] .coord {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .note-layer {
+    display: none !important;
+  }
+
   *,
   *::before,
   *::after {
